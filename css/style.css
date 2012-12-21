@@ -1,0 +1,12 @@
+canvas {
+	margin: auto;
+	display: block;
+}
+#stage {
+	width: 800px;
+	margin: auto;
+	border: 1px solid #FFF;
+}
+#instructions {
+	width: 800px;
+}
