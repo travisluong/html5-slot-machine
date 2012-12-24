@@ -161,20 +161,24 @@ function ButtonObject(x, y, width, height, handler) {
     }
 }
 
+var reels_top = [];
+
 var spin_handler = function(){
-	for (var i = 0; i < reels.length; i++) {
+	for (var i = 0; i < reels_bottom.length; i++) {
 		// console.log(reels[i]);
 		// alert(i);
 		// reel = reels[i];
-		animate_reel(i);
+		reels_top = generate_reels(-1000);
+		// console.log(reels_top);
+		animate_reels(i);
 	};
 }
 
-var animate_reel = function(index){
+var animate_reels = function(index){
 	setTimeout(function(){
-		console.log(index);
-		reels[index].y_acc = 1;
-	}, 1000 * index);
+		reels_top[index].y_vel = 10;
+		reels_bottom[index].y_vel = 10;
+	}, 100 * index);
 }
 
 var button_object_array = [
@@ -192,17 +196,17 @@ function generate_random_tile_list (num) {
 	return random_tile_list;
 }
 
-var generate_reels = function(){
+var generate_reels = function(starting_y){
 	var reels = [];
-	reels.push(new Reel(150, 0, 0, 0, 0, generate_random_tile_list(10)));
-	reels.push(new Reel(250, 0, 0, 0, 0, generate_random_tile_list(10)));
-	reels.push(new Reel(350, 0, 0, 0, 0, generate_random_tile_list(10)));
-	reels.push(new Reel(450, 0, 0, 0, 0, generate_random_tile_list(10)));
-	reels.push(new Reel(550, 0, 0, 0, 0, generate_random_tile_list(10)));
+	reels.push(new Reel(150, starting_y, 0, 0, 0, generate_random_tile_list(10)));
+	reels.push(new Reel(250, starting_y, 0, 0, 0, generate_random_tile_list(10)));
+	reels.push(new Reel(350, starting_y, 0, 0, 0, generate_random_tile_list(10)));
+	reels.push(new Reel(450, starting_y, 0, 0, 0, generate_random_tile_list(10)));
+	reels.push(new Reel(550, starting_y, 0, 0, 0, generate_random_tile_list(10)));
 	return reels;
 }
 
-var reels = generate_reels();
+var reels_bottom = generate_reels(0);
 
 // console.log(reels);
 
@@ -273,8 +277,11 @@ var reset = function () {
 
 // update game objects
 var update = function (modifier) {
-	for (var i = 0; i < reels.length; i++) {
-		reels[i].update(modifier);
+	for (var i = 0; i < reels_bottom.length; i++) {
+		reels_bottom[i].update(modifier);
+	};
+	for (var i = 0; i < reels_top.length; i++) {
+		reels_top[i].update(modifier);
 	};
 };
 
@@ -283,9 +290,13 @@ var render = function () {
 	// draw background
 	ctx.fillStyle = "white";
 	ctx.fillRect(0, 0, WIDTH, HEIGHT);
-	for (var i = 0; i < reels.length; i++) {
+	for (var i = 0; i < reels_bottom.length; i++) {
 		// draw_reel(reels[i]);
-		reels[i].draw();
+		reels_bottom[i].draw();
+	};
+	for (var i = 0; i < reels_top.length; i++) {
+		// draw_reel(reels[i]);
+		reels_top[i].draw();
 	};
 	// draw_reel(reels[0], 0);
 	ctx.fillStyle = "grey";
