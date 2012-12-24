@@ -116,7 +116,7 @@ function Reel(x, y, x_vel, y_vel, y_acc, tiles) {
 	};
 	this.update = function(modifier) {
 		// update velocity
-		this.y_vel += this.y_acc;
+		// this.y_vel += this.y_acc;
 
 		// update position
 		this.y += this.y_vel;
@@ -281,6 +281,11 @@ var update = function (modifier) {
 		reels_bottom[i].update(modifier);
 	};
 	for (var i = 0; i < reels_top.length; i++) {
+		if (reels_top[i].y >= 0) {
+			reels_top[i].y_vel = 0;
+			reels_bottom = reels_top;
+			reels_bottom[i].y = 0;
+		}
 		reels_top[i].update(modifier);
 	};
 };
