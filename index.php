@@ -21,7 +21,6 @@
 // declare globals
 var WIDTH = 800;
 var HEIGHT = 600;
-var tiles = [];
 
 // create the canvas
 var canvas = $('<canvas width ="' + WIDTH + '" height="' + HEIGHT + '"></canvas>');
@@ -64,12 +63,6 @@ tile5_img.onload = function () {
 }
 tile5_img.src = "img/tl-icons-spaceneedle.png";
 
-tiles.push(new Tile('whitebook', tile1_img, '1'));
-tiles.push(new Tile('greenbook', tile2_img, '1'));
-tiles.push(new Tile('ia', tile3_img, '1'));
-tiles.push(new Tile('money', tile4_img, '1'));
-tiles.push(new Tile('seattle', tile5_img, '1'));
-
 // fisher yates shuffle algorithm
 function fisherYates ( myArray ) {
 	var i = myArray.length;
@@ -84,12 +77,22 @@ function fisherYates ( myArray ) {
 	console.log(myArray);
 }
 
-function GameState(win, paid, credits, bet) {
+function GameState(win, paid, credits, bet, tiles) {
 	this.win = win;
 	this.paid = paid;
 	this.credits = credits;
 	this.bet = bet;
+	this.tiles = tiles;
 }
+
+var game_state = new GameState(0, 0, 50, 0, []);
+
+game_state.tiles.push(new Tile('whitebook', tile1_img, '1'));
+game_state.tiles.push(new Tile('greenbook', tile2_img, '1'));
+game_state.tiles.push(new Tile('ia', tile3_img, '1'));
+game_state.tiles.push(new Tile('money', tile4_img, '1'));
+game_state.tiles.push(new Tile('seattle', tile5_img, '1'));
+
 
 function Tile(name, img, value) {
 	this.name = name;
@@ -97,12 +100,38 @@ function Tile(name, img, value) {
 	this.value = value;
 }
 
+function Reel(x, y, x_vel, y_vel, y_acc, tiles) {
+	this.x = x;
+	this.y = y;
+	this.x_vel = x_vel;
+	this.y_vel = y_vel;
+	this.y_acc = y_acc;
+	this.tiles = tiles;
+	this.draw = function() {
+		for (var i = 0; i < this.tiles.length; i++) {
+			// drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
+			y_offset = this.y + 100 * i;
+			ctx.drawImage(game_state.tiles[this.tiles[i]].img, 0, 0, 100, 100, this.x, y_offset, 100, 100);
+		};
+	};
+	this.update = function(modifier) {
+		// update velocity
+		this.y_vel += this.y_acc;
 
-function ButtonObject(x, y, width, height) {
-    this.x = x;
-    this.y = y;
-    this.width = width;
-    this.height = height;
+		// update position
+		this.y += this.y_vel;
+
+		// console.log(this.y);
+
+
+	};
+}
+
+function ButtonObject(x, y, width, height, handler) {
+	this.x = x;
+	this.y = y;
+	this.width = width;
+	this.height = height;
 
     // mouse parameter holds the mouse coordinates
     this.handleClick = function(mouse) {
@@ -111,14 +140,15 @@ function ButtonObject(x, y, width, height) {
         // and mouse coordinates
 
         if (this.x < mouse.x &&
-            this.x + this.width > mouse.x &&
-            this.y < mouse.y &&
-            this.y + this.height > mouse.y) {
+        	this.x + this.width > mouse.x &&
+        	this.y < mouse.y &&
+        	this.y + this.height > mouse.y) {
 
             // hit test succeeded, handle the click event!
-        	alert('hit');
-            return true;
-        }
+
+        handler();
+        return true;
+    }
 
         // hit test did not succeed
         return false;
@@ -131,42 +161,60 @@ function ButtonObject(x, y, width, height) {
     }
 }
 
-var button_object_array = [
-	new ButtonObject(400, 350, 200, 200)
-];
+var spin_handler = function(){
+	for (var i = 0; i < reels.length; i++) {
+		// console.log(reels[i]);
+		// alert(i);
+		// reel = reels[i];
+		animate_reel(i);
+	};
+}
 
-var reels = [];
+var animate_reel = function(index){
+	setTimeout(function(){
+		console.log(index);
+		reels[index].y_acc = 1;
+	}, 1000 * index);
+}
+
+var button_object_array = [
+	// x, y, width, height, click handler
+	new ButtonObject(500, 350, 150, 150, spin_handler)
+	];
 
 // returns an array of random numbers between 0 and length of tiles array
 function generate_random_tile_list (num) {
 	var random_tile_list = [];
 	for (var i = 0; i < num; i++) {
-		var random_num = Math.floor(Math.random() * tiles.length);
+		var random_num = Math.floor(Math.random() * game_state.tiles.length);
 		random_tile_list.push(random_num);
 	};
 	return random_tile_list;
 }
 
-reels.push(generate_random_tile_list(10));
-reels.push(generate_random_tile_list(10));
-reels.push(generate_random_tile_list(10));
-reels.push(generate_random_tile_list(10));
-reels.push(generate_random_tile_list(10));
+var generate_reels = function(){
+	var reels = [];
+	reels.push(new Reel(150, 0, 0, 0, 0, generate_random_tile_list(10)));
+	reels.push(new Reel(250, 0, 0, 0, 0, generate_random_tile_list(10)));
+	reels.push(new Reel(350, 0, 0, 0, 0, generate_random_tile_list(10)));
+	reels.push(new Reel(450, 0, 0, 0, 0, generate_random_tile_list(10)));
+	reels.push(new Reel(550, 0, 0, 0, 0, generate_random_tile_list(10)));
+	return reels;
+}
 
-function draw_reel (reel, position) {
-	for (var i = 0; i < reel.length; i++) {
-		// console.log(tiles[reel[i]].name);
-		// ctx.save();
-		// ctx.translate(150, i * 100 + 150);
+var reels = generate_reels();
 
+// console.log(reels);
+
+function draw_reel (reel) {
+	for (var i = 0; i < reel.tiles.length; i++) {
 		// drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
-		x_offset = 100 * position;
 		y_offset = 100 * i;
-		ctx.drawImage(tiles[reel[i]].img, 0, 0, 100, 100, x_offset + 150, y_offset, 100, 100);
+		ctx.drawImage(game_state.tiles[reel.tiles[i]].img, 0, 0, 100, 100, reel.x, y_offset, 100, 100);
 	};
 }
 
-draw_reel(reels[0], 0);
+// draw_reel(reels[0], 0);
 
 // handle keyboard controls
 var keysDown = {};
@@ -225,7 +273,9 @@ var reset = function () {
 
 // update game objects
 var update = function (modifier) {
-
+	for (var i = 0; i < reels.length; i++) {
+		reels[i].update(modifier);
+	};
 };
 
 // draw everything
@@ -234,9 +284,10 @@ var render = function () {
 	ctx.fillStyle = "white";
 	ctx.fillRect(0, 0, WIDTH, HEIGHT);
 	for (var i = 0; i < reels.length; i++) {
-		draw_reel(reels[i], i)
+		// draw_reel(reels[i]);
+		reels[i].draw();
 	};
-	draw_reel(reels[0], 0);
+	// draw_reel(reels[0], 0);
 	ctx.fillStyle = "grey";
 	ctx.fillRect(0, HEIGHT / 2, WIDTH, HEIGHT / 2)
 
