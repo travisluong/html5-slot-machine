@@ -21,6 +21,43 @@
 // declare globals
 var WIDTH = 800;
 var HEIGHT = 600;
+// sequence, winnings
+var WINNING_SEQUENCES = [
+	// white book
+	[[0, 0, 0, 0, 0], 125],
+	[[0, 0, 0, 0], 25],
+	[[0, 0, 0], 5],
+	// green book
+	[[1, 1, 1, 1, 1], 125],
+	[[1, 1, 1, 1], 50],
+	[[1, 1, 1], 5],
+	// ia
+	[[2, 2, 2, 2, 2], 200],
+	[[2, 2, 2, 2], 50],
+	[[2, 2, 2], 10],
+	// money
+	[[3, 3, 3, 3, 3], 250],
+	[[3, 3, 3, 3], 50],
+	[[3, 3, 3], 10],
+	// seattle
+	[[4, 4, 4, 4, 4], 350],
+	[[4, 4, 4, 4], 75],
+	[[4, 4, 4], 10],
+	// car
+	[[5, 5, 5, 5, 5], 400],
+	[[5, 5, 5, 5], 80],
+	[[5, 5, 5], 20],
+	// fruit
+	[[6, 6, 6, 6, 6], 500],
+	[[6, 6, 6, 6], 100],
+	[[6, 6, 6], 25],
+	// lucky
+	[[7, 7, 7, 7, 7], 2500],
+	[[7, 7, 7, 7], 250],
+	[[7, 7, 7], 50]
+];
+
+console.log(WINNING_SEQUENCES);
 
 // create the canvas
 var canvas = $('<canvas width ="' + WIDTH + '" height="' + HEIGHT + '"></canvas>');
@@ -98,6 +135,17 @@ lucky_img.onload = function () {
 }
 lucky_img.src = "img/lucky.png";
 
+// compare line and winning sequence
+// return false if no match and true if match
+function line_sequence_match(line, winning_sequence) {
+	for (var i = 0; i < winning_sequence.length; i++) {
+		if (winning_sequence[i] != line[i]) {
+			return false;
+		}
+	};
+	return true;
+}
+
 // fisher yates shuffle algorithm
 function fisherYates ( myArray ) {
 	var i = myArray.length;
@@ -130,7 +178,6 @@ game_state.tiles.push(new Tile('seattle', tile5_img, '1'));
 game_state.tiles.push(new Tile('car', tile6_img, '1'));
 game_state.tiles.push(new Tile('fruit', tile7_img, '1'));
 game_state.tiles.push(new Tile('lucky', lucky_img, '1'));
-
 
 function Tile(name, img, value) {
 	this.name = name;
@@ -214,8 +261,8 @@ var spin_handler = function(){
 
 var animate_reels = function(index){
 	setTimeout(function(){
-		reels_top[index].y_vel = 20;
-		reels_bottom[index].y_vel = 20;
+		reels_top[index].y_vel = 15;
+		reels_bottom[index].y_vel = 15;
 	}, 100 * index);
 }
 
