@@ -77,6 +77,27 @@ tile5_img.onload = function () {
 }
 tile5_img.src = "img/tl-icons-spaceneedle.png";
 
+var tile6_img_ready = false;
+var tile6_img = new Image();
+tile6_img.onload = function () {
+	tile6_img_ready = true;
+}
+tile6_img.src = "img/tl-car.png";
+
+var tile7_img_ready = false;
+var tile7_img = new Image();
+tile7_img.onload = function () {
+	tile7_img_ready = true;
+}
+tile7_img.src = "img/tl-fruit.png";
+
+var lucky_img_ready = false;
+var lucky_img = new Image();
+lucky_img.onload = function () {
+	lucky_img_ready = true;
+}
+lucky_img.src = "img/lucky.png";
+
 // fisher yates shuffle algorithm
 function fisherYates ( myArray ) {
 	var i = myArray.length;
@@ -106,6 +127,9 @@ game_state.tiles.push(new Tile('greenbook', tile2_img, '1'));
 game_state.tiles.push(new Tile('ia', tile3_img, '1'));
 game_state.tiles.push(new Tile('money', tile4_img, '1'));
 game_state.tiles.push(new Tile('seattle', tile5_img, '1'));
+game_state.tiles.push(new Tile('car', tile6_img, '1'));
+game_state.tiles.push(new Tile('fruit', tile7_img, '1'));
+game_state.tiles.push(new Tile('lucky', lucky_img, '1'));
 
 
 function Tile(name, img, value) {
