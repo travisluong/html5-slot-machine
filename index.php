@@ -28,6 +28,20 @@ var ctx = canvas.get(0).getContext("2d");
 $(canvas).appendTo('#stage');
 
 // load images
+var bg_img_ready = false;
+var bg_img = new Image();
+bg_img.onload = function () {
+	bg_img_ready = true;
+}
+bg_img.src = "img/lucky-slot-machine.png";
+
+var buttons_on_img_ready = false;
+var buttons_on_img = new Image();
+buttons_on_img.onload = function () {
+	buttons_on_img_ready = true;
+}
+buttons_on_img.src = "img/buttons-on.png";
+
 var tile1_img_ready = false;
 var tile1_img = new Image();
 tile1_img.onload = function () {
@@ -110,7 +124,7 @@ function Reel(x, y, x_vel, y_vel, y_acc, tiles) {
 	this.draw = function() {
 		for (var i = 0; i < this.tiles.length; i++) {
 			// drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
-			y_offset = this.y + 100 * i;
+			y_offset = this.y + 100 * i + 19;
 			ctx.drawImage(game_state.tiles[this.tiles[i]].img, 0, 0, 100, 100, this.x, y_offset, 100, 100);
 		};
 	};
@@ -183,7 +197,7 @@ var animate_reels = function(index){
 
 var button_object_array = [
 	// x, y, width, height, click handler
-	new ButtonObject(500, 350, 150, 150, spin_handler)
+	new ButtonObject(550, 450, 86, 80, spin_handler)
 	];
 
 // returns an array of random numbers between 0 and length of tiles array
@@ -292,9 +306,10 @@ var update = function (modifier) {
 
 // draw everything
 var render = function () {
-	// draw background
+	// draw white background
 	ctx.fillStyle = "white";
 	ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
 	for (var i = 0; i < reels_bottom.length; i++) {
 		// draw_reel(reels[i]);
 		reels_bottom[i].draw();
@@ -303,23 +318,27 @@ var render = function () {
 		// draw_reel(reels[i]);
 		reels_top[i].draw();
 	};
-	// draw_reel(reels[0], 0);
-	ctx.fillStyle = "grey";
-	ctx.fillRect(0, HEIGHT / 2, WIDTH, HEIGHT / 2)
-
-	// draw game states
-	ctx.fillStyle = "black"
-	ctx.font = "24px Arial";
-	ctx.textAlign = "left";
-	ctx.textBaseline = "top";
-	ctx.fillText(game_state.win, 150, HEIGHT / 2);
-	ctx.fillText(game_state.paid, 300, HEIGHT / 2);
-	ctx.fillText(game_state.credits, 450, HEIGHT / 2);
-	ctx.fillText(game_state.bet, 600, HEIGHT / 2);
 
 	for (var i = 0; i < button_object_array.length; i++) {
 		button_object_array[i].draw();
 	};
+
+	// draw bg img
+	ctx.drawImage(bg_img, 0, 0, 800, 600, 0, 0, 800, 600);
+
+	// draw buttons
+	ctx.drawImage(buttons_on_img, 0, 0, 800, 241, 0, 360, 800, 241);
+
+	// draw game states
+	ctx.fillStyle = "#7F9500"
+	ctx.font = "24px Arial";
+	ctx.textAlign = "right";
+	ctx.textBaseline = "top";
+	ctx.fillText(game_state.win, 265, 345);
+	ctx.fillText(game_state.paid, 382, 345);
+	ctx.fillText(game_state.credits, 512, 345);
+	ctx.fillText(game_state.bet, 602, 345);
+
 };
 
 // the main game loop
