@@ -176,8 +176,8 @@ var spin_handler = function(){
 
 var animate_reels = function(index){
 	setTimeout(function(){
-		reels_top[index].y_vel = 10;
-		reels_bottom[index].y_vel = 10;
+		reels_top[index].y_vel = 20;
+		reels_bottom[index].y_vel = 20;
 	}, 100 * index);
 }
 
@@ -306,6 +306,16 @@ var render = function () {
 	// draw_reel(reels[0], 0);
 	ctx.fillStyle = "grey";
 	ctx.fillRect(0, HEIGHT / 2, WIDTH, HEIGHT / 2)
+
+	// draw game states
+	ctx.fillStyle = "black"
+	ctx.font = "24px Arial";
+	ctx.textAlign = "left";
+	ctx.textBaseline = "top";
+	ctx.fillText(game_state.win, 150, HEIGHT / 2);
+	ctx.fillText(game_state.paid, 300, HEIGHT / 2);
+	ctx.fillText(game_state.credits, 450, HEIGHT / 2);
+	ctx.fillText(game_state.bet, 600, HEIGHT / 2);
 
 	for (var i = 0; i < button_object_array.length; i++) {
 		button_object_array[i].draw();
