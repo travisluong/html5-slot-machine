@@ -27,39 +27,55 @@ var WINNING_SEQUENCES = [
 	[[0, 0, 0, 0, 0], 125],
 	[[0, 0, 0, 0], 25],
 	[[0, 0, 0], 5],
+	[[0, 0], 2],
 	// green book
 	[[1, 1, 1, 1, 1], 125],
 	[[1, 1, 1, 1], 50],
 	[[1, 1, 1], 5],
+	[[1, 1], 2],
 	// ia
 	[[2, 2, 2, 2, 2], 200],
 	[[2, 2, 2, 2], 50],
 	[[2, 2, 2], 10],
+	[[2, 2], 5],
 	// money
 	[[3, 3, 3, 3, 3], 250],
 	[[3, 3, 3, 3], 50],
 	[[3, 3, 3], 10],
+	[[3, 3], 5],
 	// seattle
 	[[4, 4, 4, 4, 4], 350],
 	[[4, 4, 4, 4], 75],
 	[[4, 4, 4], 10],
+	[[4, 4], 5],
 	// car
 	[[5, 5, 5, 5, 5], 400],
 	[[5, 5, 5, 5], 80],
 	[[5, 5, 5], 20],
+	[[5, 5], 10],
 	// fruit
 	[[6, 6, 6, 6, 6], 500],
 	[[6, 6, 6, 6], 100],
 	[[6, 6, 6], 25],
+	[[6, 6], 10],
 	// lucky
 	[[7, 7, 7, 7, 7], 2500],
 	[[7, 7, 7, 7], 250],
-	[[7, 7, 7], 50]
+	[[7, 7, 7], 50],
+	[[7, 7], 25]
 ];
+
+// [reel_number, row]
 var LINE_MAP = [
 	[[0, 1], [1, 1], [2, 1], [3, 1], [4, 1]],
 	[[0, 0], [1, 0], [2, 0], [3, 0], [4, 0]],
-	[[0, 2], [1, 2], [2, 2], [3, 2], [4, 2]]
+	[[0, 2], [1, 2], [2, 2], [3, 2], [4, 2]],
+	[[0, 0], [1, 1], [2, 2], [3, 1], [4, 0]],
+	[[0, 2], [1, 1], [2, 0], [3, 1], [4, 2]],
+	[[0, 0], [1, 0], [2, 1], [3, 2], [4, 2]],
+	[[0, 2], [1, 2], [2, 1], [3, 0], [4, 0]],
+	[[0, 1], [1, 2], [2, 1], [3, 0], [4, 1]],
+	[[0, 1], [1, 0], [2, 1], [3, 2], [4, 1]]
 ];
 
 // console.log(WINNING_SEQUENCES);
@@ -170,6 +186,17 @@ function get_all_results(lines_to_get) {
 		all_results.push(get_results_line_from_reel(LINE_MAP[i]));
 	};
 	return all_results;
+}
+
+// calculate winnings from results
+function calculate_winnings(all_results) {
+	for (var i = 0; i < all_results.length; i++) {
+		for (var j = 0; j < WINNING_SEQUENCES.length; j++) {
+			if (results_sequence_match(all_results[i], WINNING_SEQUENCES[j][0])) {
+				game_state.win += WINNING_SEQUENCES[j][1];
+			}
+		};
+	};
 }
 
 // fisher yates shuffle algorithm
@@ -283,7 +310,8 @@ var spin_handler = function(){
 		// console.log(reels_top);
 		animate_reels(i);
 	};
-	console.log(get_all_results(3));
+	// console.log(get_all_results(3));
+	calculate_winnings(get_all_results(9));
 }
 
 var animate_reels = function(index){
