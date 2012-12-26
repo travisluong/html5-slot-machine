@@ -56,8 +56,13 @@ var WINNING_SEQUENCES = [
 	[[7, 7, 7, 7], 250],
 	[[7, 7, 7], 50]
 ];
+var LINE_MAP = [
+	[[0, 1], [1, 1], [2, 1], [3, 1], [4, 1]],
+	[[0, 0], [1, 0], [2, 0], [3, 0], [4, 0]],
+	[[0, 2], [1, 2], [2, 2], [3, 2], [4, 2]]
+];
 
-console.log(WINNING_SEQUENCES);
+// console.log(WINNING_SEQUENCES);
 
 // create the canvas
 var canvas = $('<canvas width ="' + WIDTH + '" height="' + HEIGHT + '"></canvas>');
@@ -137,13 +142,34 @@ lucky_img.src = "img/lucky.png";
 
 // compare line and winning sequence
 // return false if no match and true if match
-function line_sequence_match(line, winning_sequence) {
+function results_sequence_match(results, winning_sequence) {
 	for (var i = 0; i < winning_sequence.length; i++) {
-		if (winning_sequence[i] != line[i]) {
+		if (winning_sequence[i] != results[i]) {
 			return false;
 		}
 	};
 	return true;
+}
+
+// get results from reel based on line_map argument
+// return the results of one line
+function get_results_line_from_reel(line_map) {
+	var results = [];
+	for (var i = 0; i < line_map.length; i++) {
+		var reel_number = line_map[i][0];
+		var row = line_map[i][1];
+		results.push(reels_top[reel_number].tiles[row]);
+	};
+	return results;
+}
+
+// return array of all results
+function get_all_results(lines_to_get) {
+	all_results = [];
+	for (var i = 0; i < lines_to_get; i++) {
+		all_results.push(get_results_line_from_reel(LINE_MAP[i]));
+	};
+	return all_results;
 }
 
 // fisher yates shuffle algorithm
@@ -157,7 +183,7 @@ function fisherYates ( myArray ) {
 		myArray[i] = tempj;
 		myArray[j] = tempi;
 	}
-	console.log(myArray);
+	// console.log(myArray);
 }
 
 function GameState(win, paid, credits, bet, tiles) {
@@ -257,6 +283,7 @@ var spin_handler = function(){
 		// console.log(reels_top);
 		animate_reels(i);
 	};
+	console.log(get_all_results(3));
 }
 
 var animate_reels = function(index){
