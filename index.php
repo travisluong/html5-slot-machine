@@ -190,13 +190,16 @@ function get_all_results(lines_to_get) {
 
 // calculate winnings from results
 function calculate_winnings(all_results) {
+	game_state.highlight_tiles = [];
 	for (var i = 0; i < all_results.length; i++) {
 		for (var j = 0; j < WINNING_SEQUENCES.length; j++) {
 			if (results_sequence_match(all_results[i], WINNING_SEQUENCES[j][0])) {
 				game_state.win += WINNING_SEQUENCES[j][1];
+				game_state.highlight_tiles.push(i);
 			}
 		};
 	};
+	console.log(game_state.highlight_tiles);
 }
 
 // fisher yates shuffle algorithm
@@ -213,15 +216,16 @@ function fisherYates ( myArray ) {
 	// console.log(myArray);
 }
 
-function GameState(win, paid, credits, bet, tiles) {
+function GameState(win, paid, credits, bet, tiles, highlight_tiles) {
 	this.win = win;
 	this.paid = paid;
 	this.credits = credits;
 	this.bet = bet;
 	this.tiles = tiles;
+	this.highlight_tiles = highlight_tiles;
 }
 
-var game_state = new GameState(0, 0, 50, 0, []);
+var game_state = new GameState(0, 0, 50, 0, [], []);
 
 game_state.tiles.push(new Tile('whitebook', tile1_img, '1'));
 game_state.tiles.push(new Tile('greenbook', tile2_img, '1'));
@@ -464,6 +468,16 @@ var render = function () {
 	ctx.fillText(game_state.paid, 382, 345);
 	ctx.fillText(game_state.credits, 512, 345);
 	ctx.fillText(game_state.bet, 602, 345);
+
+	// draw game state highlight tiles
+	ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
+	for (var i = 0; i < game_state.highlight_tiles.length; i++) {
+		for (var j = 0; j < LINE_MAP[game_state.highlight_tiles[i]].length; j++) {
+			var x_coord = LINE_MAP[game_state.highlight_tiles[i]][j][0] * 100 + 150;
+			var y_coord = LINE_MAP[game_state.highlight_tiles[i]][j][1] * 100 + 20;
+			ctx.fillRect(x_coord, y_coord, 100, 100);
+		};
+	};
 
 };
 
