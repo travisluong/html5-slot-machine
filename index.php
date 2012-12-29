@@ -217,16 +217,30 @@ function fisherYates ( myArray ) {
 	// console.log(myArray);
 }
 
-function GameState(win, paid, credits, bet, tiles, highlight_tiles) {
+function GameState(win, paid, credits, bet, tiles, highlight_tiles, show_highlight_tiles) {
 	this.win = win;
 	this.paid = paid;
 	this.credits = credits;
 	this.bet = bet;
 	this.tiles = tiles;
 	this.highlight_tiles = highlight_tiles;
+	this.show_highlight_tiles = show_highlight_tiles;
+	this.transfer_win_to_credits = function() {
+		var i = this.win;
+		var counter = 0;
+		while (i > 0) {
+			i -= 1;
+			counter += 50;
+			setTimeout(function(){
+				game_state.win -= 1;
+				game_state.paid += 1;
+				game_state.credits += 1;
+			}, counter);
+		}
+	}
 }
 
-var game_state = new GameState(0, 0, 50, 0, [], []);
+var game_state = new GameState(0, 0, 50, 0, [], [], false);
 
 game_state.tiles.push(new Tile('whitebook', tile1_img, '1'));
 game_state.tiles.push(new Tile('greenbook', tile2_img, '1'));
@@ -328,16 +342,18 @@ var change_bet_amount = function(bet_amount) {
 var reels_top = [];
 
 var spin_handler = function(){
+	game_state.paid = 0;
+	game_state.credits -= game_state.bet;
+	game_state.show_highlight_tiles = false;
 	for (var i = 0; i < reels_bottom.length; i++) {
-		// console.log(reels[i]);
-		// alert(i);
-		// reel = reels[i];
 		reels_top = generate_reels(-1000);
-		// console.log(reels_top);
 		animate_reels(i);
 	};
-	// console.log(get_all_results(3));
 	calculate_winnings(get_all_results(game_state.bet));
+	setTimeout(function(){
+		game_state.show_highlight_tiles = true;
+		game_state.transfer_win_to_credits();
+	}, 1500);
 }
 
 var animate_reels = function(index){
@@ -497,15 +513,16 @@ var render = function () {
 	ctx.fillText(game_state.bet, 602, 345);
 
 	// draw game state highlight tiles
-	ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
-	for (var i = 0; i < game_state.highlight_tiles.length; i++) {
-		for (var j = 0; j < LINE_MAP[game_state.highlight_tiles[i]].length; j++) {
-			var x_coord = LINE_MAP[game_state.highlight_tiles[i]][j][0] * 100 + 150;
-			var y_coord = LINE_MAP[game_state.highlight_tiles[i]][j][1] * 100 + 20;
-			ctx.fillRect(x_coord, y_coord, 100, 100);
+	if (game_state.show_highlight_tiles) {
+		ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
+		for (var i = 0; i < game_state.highlight_tiles.length; i++) {
+			for (var j = 0; j < LINE_MAP[game_state.highlight_tiles[i]].length; j++) {
+				var x_coord = LINE_MAP[game_state.highlight_tiles[i]][j][0] * 100 + 150;
+				var y_coord = LINE_MAP[game_state.highlight_tiles[i]][j][1] * 100 + 20;
+				ctx.fillRect(x_coord, y_coord, 100, 100);
+			};
 		};
-	};
-
+	}
 };
 
 // the main game loop
