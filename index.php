@@ -232,7 +232,6 @@ function GameState(win, paid, credits, bet, tiles, highlight_tiles, show_highlig
 			i -= 1;
 			counter += 50;
 			setTimeout(function(){
-				game_state.win -= 1;
 				game_state.paid += 1;
 				game_state.credits += 1;
 			}, counter);
@@ -343,6 +342,7 @@ var reels_top = [];
 
 var spin_handler = function(){
 	game_state.paid = 0;
+	game_state.win = 0;
 	game_state.credits -= game_state.bet;
 	game_state.show_highlight_tiles = false;
 	for (var i = 0; i < reels_bottom.length; i++) {
