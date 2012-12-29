@@ -196,6 +196,7 @@ function calculate_winnings(all_results) {
 			if (results_sequence_match(all_results[i], WINNING_SEQUENCES[j][0])) {
 				game_state.win += WINNING_SEQUENCES[j][1];
 				game_state.highlight_tiles.push(i);
+				break;
 			}
 		};
 	};
