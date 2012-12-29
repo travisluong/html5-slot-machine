@@ -291,7 +291,7 @@ function ButtonObject(x, y, width, height, handler) {
 
         handler();
         return true;
-    }
+    	}
 
         // hit test did not succeed
         return false;
@@ -302,6 +302,27 @@ function ButtonObject(x, y, width, height, handler) {
     	ctx.fillStyle = "white";
     	ctx.fillRect(this.x, this.y, this.width, this.height);
     }
+}
+
+// subclass of ButtonObject
+function BetButton(x, y, width, height, handler, bet_amount) {
+	ButtonObject.apply(this, arguments);
+	this.bet_amount = bet_amount;
+	this.handleClick = function(mouse) {
+
+        if (this.x < mouse.x &&
+        	this.x + this.width > mouse.x &&
+        	this.y < mouse.y &&
+        	this.y + this.height > mouse.y) {
+
+	        handler(bet_amount);
+	        return true;
+	    }
+	}
+}
+
+var change_bet_amount = function(bet_amount) {
+	game_state.bet = bet_amount;
 }
 
 var reels_top = [];
@@ -316,7 +337,7 @@ var spin_handler = function(){
 		animate_reels(i);
 	};
 	// console.log(get_all_results(3));
-	calculate_winnings(get_all_results(9));
+	calculate_winnings(get_all_results(game_state.bet));
 }
 
 var animate_reels = function(index){
@@ -328,7 +349,12 @@ var animate_reels = function(index){
 
 var button_object_array = [
 	// x, y, width, height, click handler
-	new ButtonObject(550, 450, 86, 80, spin_handler)
+	new ButtonObject(550, 450, 86, 80, spin_handler),
+	new BetButton(473, 450, 64, 57, change_bet_amount, 9),
+	new BetButton(396, 450, 64, 57, change_bet_amount, 7),
+	new BetButton(319, 450, 64, 57, change_bet_amount, 5),
+	new BetButton(242, 450, 64, 57, change_bet_amount, 3),
+	new BetButton(165, 450, 64, 57, change_bet_amount, 1),
 	];
 
 // returns an array of random numbers between 0 and length of tiles array
