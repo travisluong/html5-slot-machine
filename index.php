@@ -377,6 +377,9 @@ function GameState(win, paid, credits, bet, tiles, highlight_tiles, show_highlig
 			setTimeout(function(){
 				game_state.paid += 1;
 				game_state.credits += 1;
+				if (game_state.win == game_state.paid) {
+					game_state.spin_click_shield = false;
+				}
 			}, counter);
 		}
 	}
@@ -507,7 +510,9 @@ var spin_handler = function(){
 	setTimeout(function(){
 		game_state.transfer_win_to_credits();
 		game_state.rotate_highlight_loop = setInterval(rotate_highlight_tiles, 2000);
-		game_state.spin_click_shield = false;
+		if (game_state.win == game_state.paid) {
+			game_state.spin_click_shield = false;
+		}
 	}, 1500);
 }
 
