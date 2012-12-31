@@ -323,6 +323,7 @@ function calculate_winnings(all_results) {
 			if (results_sequence_match(all_results[i], WINNING_SEQUENCES[j][0])) {
 				game_state.win += WINNING_SEQUENCES[j][1];
 				game_state.highlight_tiles.push(i);
+				game_state.current_line_winnings_map.push([i, WINNING_SEQUENCES[j][1]]);
 				break;
 			}
 		};
@@ -366,6 +367,7 @@ function GameState(win, paid, credits, bet, tiles, highlight_tiles, show_highlig
 	this.rotate_highlight_loop = null;
 	this.spin_click_shield = false;
 	this.show_lines = true;
+	this.current_line_winnings_map = [];
 	this.transfer_win_to_credits = function() {
 		var i = this.win;
 		var counter = 0;
@@ -496,6 +498,7 @@ var spin_handler = function(){
 	game_state.credits -= game_state.bet;
 	game_state.show_highlight_tiles = false;
 	game_state.show_lines = false;
+	game_state.current_line_winnings_map = [];
 	for (var i = 0; i < reels_bottom.length; i++) {
 		reels_top = generate_reels(-1000);
 		animate_reels(i);
@@ -503,7 +506,7 @@ var spin_handler = function(){
 	calculate_winnings(get_all_results(game_state.bet));
 	setTimeout(function(){
 		game_state.transfer_win_to_credits();
-		game_state.rotate_highlight_loop = setInterval(rotate_highlight_tiles, 1000);
+		game_state.rotate_highlight_loop = setInterval(rotate_highlight_tiles, 2000);
 		game_state.spin_click_shield = false;
 	}, 1500);
 }
@@ -653,49 +656,67 @@ var render = function () {
 
 	// draw game states
 	ctx.fillStyle = "#7F9500"
-	ctx.font = "24px Arial";
+	ctx.font = "14px 'Press Start 2P'";
 	ctx.textAlign = "right";
 	ctx.textBaseline = "top";
-	ctx.fillText(game_state.win, 265, 353);
-	ctx.fillText(game_state.paid, 382, 353);
-	ctx.fillText(game_state.credits, 512, 353);
-	ctx.fillText(game_state.bet, 602, 353);
+	ctx.fillText(game_state.win, 265, 358);
+	ctx.fillText(game_state.paid, 382, 358);
+	ctx.fillText(game_state.credits, 512, 358);
+	ctx.fillText(game_state.bet, 602, 358);
 
 	// draw game state highlight tiles
 	if (game_state.show_highlight_tiles && game_state.highlight_tiles.length && !game_state.show_lines) {
+		var winnings_x_coord = 155;
+		var winnings_y_coord = 0;
 		switch(game_state.current_highlight_tiles) {
 			case 0:
 				ctx.fillStyle = "rgba(0, 147, 68, 0.5)";
+				winnings_y_coord = 125;
 				break;
 			case 1:
 				ctx.fillStyle = "rgba(214, 223, 35, 0.5)";
+				winnings_y_coord = 25;
 				break;
 			case 2:
 				ctx.fillStyle = "rgba(42, 56, 143, 0.5)";
+				winnings_y_coord = 225;
 				break;
 			case 3:
 				ctx.fillStyle = "rgba(237, 28, 36, 0.5)";
+				winnings_y_coord = 25;
 				break;
 			case 4:
 				ctx.fillStyle = "rgba(211, 91, 146, 0.5)";
+				winnings_y_coord = 225;
 				break;
 			case 5:
 				ctx.fillStyle = "rgba(251, 175, 63, 0.5)";
+				winnings_y_coord = 25;
 				break;
 			case 6:
 				ctx.fillStyle = "rgba(101, 44, 144, 0.5)";
+				winnings_y_coord = 225;
 				break;
 			case 7:
 				ctx.fillStyle = "rgba(140, 198, 62, 0.5)";
+				winnings_y_coord = 125;
 				break;
 			case 8:
 				ctx.fillStyle = "rgba(0, 173, 239, 0.5)";
+				winnings_y_coord = 125;
 				break;
 		}
 		for (var j = 0; j < 5; j++) {
 			var x_coord = LINE_MAP[game_state.current_highlight_tiles][j][0] * 100 + 150;
 			var y_coord = LINE_MAP[game_state.current_highlight_tiles][j][1] * 100 + 20;
 			ctx.fillRect(x_coord, y_coord, 100, 100);
+		};
+		for (var i = 0; i < game_state.current_line_winnings_map.length; i++) {
+			if (game_state.current_line_winnings_map[i][0] == game_state.current_highlight_tiles) {
+				ctx.textAlign = "left";
+				ctx.fillStyle = "#FFFFFF";
+				ctx.fillText(game_state.current_line_winnings_map[i][1], winnings_x_coord, winnings_y_coord);
+			}
 		};
 	}
 
