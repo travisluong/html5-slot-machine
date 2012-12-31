@@ -156,6 +156,133 @@ lucky_img.onload = function () {
 }
 lucky_img.src = "img/lucky.png";
 
+var ball1_img_ready = false;
+var ball1_img = new Image();
+ball1_img.onload = function () {
+	ball1_img_ready = true;
+}
+ball1_img.src = "img/ball1.png";
+
+var ball2_img_ready = false;
+var ball2_img = new Image();
+ball2_img.onload = function () {
+	ball2_img_ready = true;
+}
+ball2_img.src = "img/ball2.png";
+
+var ball3_img_ready = false;
+var ball3_img = new Image();
+ball3_img.onload = function () {
+	ball3_img_ready = true;
+}
+ball3_img.src = "img/ball3.png";
+
+var ball4_img_ready = false;
+var ball4_img = new Image();
+ball4_img.onload = function () {
+	ball4_img_ready = true;
+}
+ball4_img.src = "img/ball4.png";
+
+var ball5_img_ready = false;
+var ball5_img = new Image();
+ball5_img.onload = function () {
+	ball5_img_ready = true;
+}
+ball5_img.src = "img/ball5.png";
+
+var ball6_img_ready = false;
+var ball6_img = new Image();
+ball6_img.onload = function () {
+	ball6_img_ready = true;
+}
+ball6_img.src = "img/ball6.png";
+
+var ball7_img_ready = false;
+var ball7_img = new Image();
+ball7_img.onload = function () {
+	ball7_img_ready = true;
+}
+ball7_img.src = "img/ball7.png";
+
+var ball8_img_ready = false;
+var ball8_img = new Image();
+ball8_img.onload = function () {
+	ball8_img_ready = true;
+}
+ball8_img.src = "img/ball8.png";
+
+var ball9_img_ready = false;
+var ball9_img = new Image();
+ball9_img.onload = function () {
+	ball9_img_ready = true;
+}
+ball9_img.src = "img/ball9.png";
+
+var line1_img_ready = false;
+var line1_img = new Image();
+line1_img.onload = function () {
+	line1_img_ready = true;
+}
+line1_img.src = "img/line1.png";
+
+var line2_img_ready = false;
+var line2_img = new Image();
+line2_img.onload = function () {
+	line2_img_ready = true;
+}
+line2_img.src = "img/line2.png";
+
+var line3_img_ready = false;
+var line3_img = new Image();
+line3_img.onload = function () {
+	line3_img_ready = true;
+}
+line3_img.src = "img/line3.png";
+
+var line4_img_ready = false;
+var line4_img = new Image();
+line4_img.onload = function () {
+	line4_img_ready = true;
+}
+line4_img.src = "img/line4.png";
+
+var line5_img_ready = false;
+var line5_img = new Image();
+line5_img.onload = function () {
+	line5_img_ready = true;
+}
+line5_img.src = "img/line5.png";
+
+var line6_img_ready = false;
+var line6_img = new Image();
+line6_img.onload = function () {
+	line6_img_ready = true;
+}
+line6_img.src = "img/line6.png";
+
+var line7_img_ready = false;
+var line7_img = new Image();
+line7_img.onload = function () {
+	line7_img_ready = true;
+}
+line7_img.src = "img/line7.png";
+
+var line8_img_ready = false;
+var line8_img = new Image();
+line8_img.onload = function () {
+	line8_img_ready = true;
+}
+line8_img.src = "img/line8.png";
+
+var line9_img_ready = false;
+var line9_img = new Image();
+line9_img.onload = function () {
+	line9_img_ready = true;
+}
+line9_img.src = "img/line9.png";
+
+
 // compare line and winning sequence
 // return false if no match and true if match
 function results_sequence_match(results, winning_sequence) {
@@ -238,6 +365,7 @@ function GameState(win, paid, credits, bet, tiles, highlight_tiles, show_highlig
 	this.current_highlight_tiles_counter = 0;
 	this.rotate_highlight_loop = null;
 	this.spin_click_shield = false;
+	this.show_lines = true;
 	this.transfer_win_to_credits = function() {
 		var i = this.win;
 		var counter = 0;
@@ -252,7 +380,7 @@ function GameState(win, paid, credits, bet, tiles, highlight_tiles, show_highlig
 	}
 }
 
-var game_state = new GameState(0, 0, 50, 0, [], [], false);
+var game_state = new GameState(0, 0, 50, 0, [], [], true);
 
 game_state.tiles.push(new Tile('whitebook', tile1_img, '1'));
 game_state.tiles.push(new Tile('greenbook', tile2_img, '1'));
@@ -342,6 +470,8 @@ function BetButton(x, y, width, height, handler, bet_amount) {
         	this.y + this.height > mouse.y) {
 
 	        handler(bet_amount);
+	    	game_state.show_lines = true;
+	    	game_state.show_highlight_tiles = false;
 	        return true;
 	    }
 	}
@@ -365,6 +495,7 @@ var spin_handler = function(){
 	game_state.win = 0;
 	game_state.credits -= game_state.bet;
 	game_state.show_highlight_tiles = false;
+	game_state.show_lines = false;
 	for (var i = 0; i < reels_bottom.length; i++) {
 		reels_top = generate_reels(-1000);
 		animate_reels(i);
@@ -520,27 +651,64 @@ var render = function () {
 	// draw bg img
 	ctx.drawImage(bg_img, 0, 0, 800, 600, 0, 0, 800, 600);
 
-	// draw buttons
-	ctx.drawImage(buttons_on_img, 0, 0, 800, 241, 0, 360, 800, 241);
-
 	// draw game states
 	ctx.fillStyle = "#7F9500"
 	ctx.font = "24px Arial";
 	ctx.textAlign = "right";
 	ctx.textBaseline = "top";
-	ctx.fillText(game_state.win, 265, 345);
-	ctx.fillText(game_state.paid, 382, 345);
-	ctx.fillText(game_state.credits, 512, 345);
-	ctx.fillText(game_state.bet, 602, 345);
+	ctx.fillText(game_state.win, 265, 353);
+	ctx.fillText(game_state.paid, 382, 353);
+	ctx.fillText(game_state.credits, 512, 353);
+	ctx.fillText(game_state.bet, 602, 353);
 
 	// draw game state highlight tiles
-	if (game_state.show_highlight_tiles && game_state.highlight_tiles.length) {
+	if (game_state.show_highlight_tiles && game_state.highlight_tiles.length && !game_state.show_lines) {
 		ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
 		for (var j = 0; j < 5; j++) {
 			var x_coord = LINE_MAP[game_state.current_highlight_tiles][j][0] * 100 + 150;
 			var y_coord = LINE_MAP[game_state.current_highlight_tiles][j][1] * 100 + 20;
 			ctx.fillRect(x_coord, y_coord, 100, 100);
 		};
+	}
+
+	// draw number balls
+	if (game_state.bet >= 1) {
+		ctx.drawImage(ball1_img, 0, 0, 561, 301, 117, 20, 561, 301);
+		if (game_state.show_lines) {
+			ctx.drawImage(line1_img, 0, 0, 561, 301, 117, 20, 561, 301);
+		}
+	}
+	if (game_state.bet >= 3) {
+		ctx.drawImage(ball2_img, 0, 0, 561, 301, 117, 20, 561, 301);
+		ctx.drawImage(ball3_img, 0, 0, 561, 301, 117, 20, 561, 301);
+		if (game_state.show_lines) {
+			ctx.drawImage(line2_img, 0, 0, 561, 301, 117, 20, 561, 301);
+			ctx.drawImage(line3_img, 0, 0, 561, 301, 117, 20, 561, 301);
+		}
+	}
+	if (game_state.bet >= 5) {
+		ctx.drawImage(ball4_img, 0, 0, 561, 301, 117, 20, 561, 301);
+		ctx.drawImage(ball5_img, 0, 0, 561, 301, 117, 20, 561, 301);
+		if (game_state.show_lines) {
+			ctx.drawImage(line4_img, 0, 0, 561, 301, 117, 20, 561, 301);
+			ctx.drawImage(line5_img, 0, 0, 561, 301, 117, 20, 561, 301);
+		}
+	}
+	if (game_state.bet >= 7) {
+		ctx.drawImage(ball6_img, 0, 0, 561, 301, 117, 20, 561, 301);
+		ctx.drawImage(ball7_img, 0, 0, 561, 301, 117, 20, 561, 301);
+		if (game_state.show_lines) {
+			ctx.drawImage(line6_img, 0, 0, 561, 301, 117, 20, 561, 301);
+			ctx.drawImage(line7_img, 0, 0, 561, 301, 117, 20, 561, 301);
+		}
+	}
+	if (game_state.bet >= 9) {
+		ctx.drawImage(ball8_img, 0, 0, 561, 301, 117, 20, 561, 301);
+		ctx.drawImage(ball9_img, 0, 0, 561, 301, 117, 20, 561, 301);
+		if (game_state.show_lines) {
+			ctx.drawImage(line8_img, 0, 0, 561, 301, 117, 20, 561, 301);
+			ctx.drawImage(line9_img, 0, 0, 561, 301, 117, 20, 561, 301);
+		}
 	}
 };
 
