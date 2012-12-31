@@ -285,6 +285,8 @@ line9_img.src = "img/line9.png";
 
 // load audio
 var spin_sound = new Audio("sound/spin.mp3");
+var bet_sound = new Audio("sound/bet.mp3");
+var coin_sound = new Audio("sound/coin.wav");
 
 // compare line and winning sequence
 // return false if no match and true if match
@@ -378,6 +380,8 @@ function GameState(win, paid, credits, bet, tiles, highlight_tiles, show_highlig
 			i -= 1;
 			counter += 50;
 			setTimeout(function(){
+				coin_sound.currentTime = 0;
+				coin_sound.play();
 				game_state.paid += 1;
 				game_state.credits += 1;
 				if (game_state.win == game_state.paid) {
@@ -480,6 +484,8 @@ function BetButton(x, y, width, height, handler, bet_amount) {
 	        handler(bet_amount);
 	    	game_state.show_lines = true;
 	    	game_state.show_highlight_tiles = false;
+	    	bet_sound.currentTime = 0;
+	    	bet_sound.play();
 	        return true;
 	    }
 	}
@@ -495,7 +501,11 @@ var spin_handler = function(){
 	if (game_state.spin_click_shield) {
 		return;
 	}
+	spin_sound.currentTime = 0;
 	spin_sound.play();
+	setTimeout(function(){
+		spin_sound.pause();
+	}, 1600);
 	game_state.spin_click_shield = true;
 	clearInterval(game_state.rotate_highlight_loop);
 	game_state.current_highlight_tiles_counter = 0;
@@ -510,8 +520,8 @@ var spin_handler = function(){
 		reels_top = generate_reels(-1000);
 		animate_reels(i);
 	};
-	calculate_winnings(get_all_results(game_state.bet));
 	setTimeout(function(){
+		calculate_winnings(get_all_results(game_state.bet));
 		game_state.transfer_win_to_credits();
 		game_state.rotate_highlight_loop = setInterval(rotate_highlight_tiles, 2000);
 		if (game_state.win == game_state.paid) {
@@ -522,8 +532,8 @@ var spin_handler = function(){
 
 var animate_reels = function(index){
 	setTimeout(function(){
-		reels_top[index].y_vel = 8;
-		reels_bottom[index].y_vel = 8;
+		reels_top[index].y_vel = 15;
+		reels_bottom[index].y_vel = 15;
 	}, 100 * index);
 }
 
@@ -723,7 +733,7 @@ var render = function () {
 		for (var i = 0; i < game_state.current_line_winnings_map.length; i++) {
 			if (game_state.current_line_winnings_map[i][0] == game_state.current_highlight_tiles) {
 				ctx.textAlign = "left";
-				ctx.fillStyle = "#FFFFFF";
+				ctx.fillStyle = "#231F20";
 				ctx.fillText(game_state.current_line_winnings_map[i][1], winnings_x_coord, winnings_y_coord);
 			}
 		};
