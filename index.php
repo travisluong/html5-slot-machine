@@ -283,6 +283,9 @@ line9_img.onload = function () {
 line9_img.src = "img/line9.png";
 
 
+// load audio
+var spin_sound = new Audio("sound/spin.mp3");
+
 // compare line and winning sequence
 // return false if no match and true if match
 function results_sequence_match(results, winning_sequence) {
@@ -492,6 +495,7 @@ var spin_handler = function(){
 	if (game_state.spin_click_shield) {
 		return;
 	}
+	spin_sound.play();
 	game_state.spin_click_shield = true;
 	clearInterval(game_state.rotate_highlight_loop);
 	game_state.current_highlight_tiles_counter = 0;
@@ -518,8 +522,8 @@ var spin_handler = function(){
 
 var animate_reels = function(index){
 	setTimeout(function(){
-		reels_top[index].y_vel = 15;
-		reels_bottom[index].y_vel = 15;
+		reels_top[index].y_vel = 8;
+		reels_bottom[index].y_vel = 8;
 	}, 100 * index);
 }
 
