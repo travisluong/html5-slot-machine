@@ -663,7 +663,35 @@ var render = function () {
 
 	// draw game state highlight tiles
 	if (game_state.show_highlight_tiles && game_state.highlight_tiles.length && !game_state.show_lines) {
-		ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
+		switch(game_state.current_highlight_tiles) {
+			case 0:
+				ctx.fillStyle = "rgba(0, 147, 68, 0.5)";
+				break;
+			case 1:
+				ctx.fillStyle = "rgba(214, 223, 35, 0.5)";
+				break;
+			case 2:
+				ctx.fillStyle = "rgba(42, 56, 143, 0.5)";
+				break;
+			case 3:
+				ctx.fillStyle = "rgba(237, 28, 36, 0.5)";
+				break;
+			case 4:
+				ctx.fillStyle = "rgba(211, 91, 146, 0.5)";
+				break;
+			case 5:
+				ctx.fillStyle = "rgba(251, 175, 63, 0.5)";
+				break;
+			case 6:
+				ctx.fillStyle = "rgba(101, 44, 144, 0.5)";
+				break;
+			case 7:
+				ctx.fillStyle = "rgba(140, 198, 62, 0.5)";
+				break;
+			case 8:
+				ctx.fillStyle = "rgba(0, 173, 239, 0.5)";
+				break;
+		}
 		for (var j = 0; j < 5; j++) {
 			var x_coord = LINE_MAP[game_state.current_highlight_tiles][j][0] * 100 + 150;
 			var y_coord = LINE_MAP[game_state.current_highlight_tiles][j][1] * 100 + 20;
