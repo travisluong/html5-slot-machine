@@ -18,6 +18,9 @@
 
 	</div>
 	<script type="text/javascript">
+// Lucky Slot Machine
+// Design and Development by Travis Luong
+
 // declare globals
 var WIDTH = 800;
 var HEIGHT = 600;
@@ -77,8 +80,6 @@ var LINE_MAP = [
 	[[0, 1], [1, 2], [2, 1], [3, 0], [4, 1]],
 	[[0, 1], [1, 0], [2, 1], [3, 2], [4, 1]]
 ];
-
-// console.log(WINNING_SEQUENCES);
 
 // create the canvas
 var canvas = $('<canvas width ="' + WIDTH + '" height="' + HEIGHT + '"></canvas>');
@@ -333,30 +334,13 @@ function calculate_winnings(all_results) {
 			}
 		};
 	};
-	console.log(game_state.highlight_tiles);
 }
-
 
 function rotate_highlight_tiles() {
 	game_state.show_highlight_tiles = true;
 	game_state.current_highlight_tiles_counter++;
 	var current_index = game_state.current_highlight_tiles_counter % game_state.highlight_tiles.length;
-	console.log(current_index);
 	game_state.current_highlight_tiles = game_state.highlight_tiles[current_index];
-}
-
-// fisher yates shuffle algorithm
-function fisherYates ( myArray ) {
-	var i = myArray.length;
-	if ( i == 0 ) return false;
-	while ( --i ) {
-		var j = Math.floor( Math.random() * ( i + 1 ) );
-		var tempi = myArray[i];
-		var tempj = myArray[j];
-		myArray[i] = tempj;
-		myArray[j] = tempi;
-	}
-	// console.log(myArray);
 }
 
 function GameState(win, paid, credits, bet, tiles, highlight_tiles, show_highlight_tiles) {
@@ -612,7 +596,6 @@ canvas.on('click', function(e) {
 
 	// use pageX and pageY to get the mouse position
 	// relative to the browser window
-
 	var mouse = {
 		x: e.pageX - canvasPosition.x,
 		y: e.pageY - canvasPosition.y
@@ -620,7 +603,6 @@ canvas.on('click', function(e) {
 
 	// iterate through all button objects
 	// and call the onclick handler of each
-
 	for (var i = 0; i < button_object_array.length; i++) {
 		button_object_array[i].handleClick(mouse);
 	};
@@ -657,12 +639,11 @@ var render = function () {
 	ctx.fillStyle = "white";
 	ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
+	// draw reels
 	for (var i = 0; i < reels_bottom.length; i++) {
-		// draw_reel(reels[i]);
 		reels_bottom[i].draw();
 	};
 	for (var i = 0; i < reels_top.length; i++) {
-		// draw_reel(reels[i]);
 		reels_top[i].draw();
 	};
 
