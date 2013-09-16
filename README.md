@@ -1,4 +1,4 @@
-slot-machine
+html5-slot-machine
 ============
 A slot machine game by Travis Luong
 
